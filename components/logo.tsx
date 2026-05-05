@@ -49,6 +49,12 @@ type LogoLockupProps = {
   className?: string;
   inverted?: boolean;
   showTagline?: boolean;
+  /**
+   * Optional className applied directly to the underlying <Image>. Useful
+   * for size overrides — e.g. the footer renders the lockup much larger
+   * than the navbar.
+   */
+  imageClassName?: string;
 };
 
 /**
@@ -60,6 +66,7 @@ export function LogoLockup({
   className,
   inverted = false,
   showTagline = false,
+  imageClassName,
 }: LogoLockupProps) {
   const src = inverted ? '/logo-mark-white.svg' : '/logo-lockup.svg';
   const width = inverted ? 323 : 302;
@@ -77,7 +84,7 @@ export function LogoLockup({
         width={width}
         height={height}
         priority
-        className="block h-10 w-auto"
+        className={cn('block h-10 w-auto', imageClassName)}
       />
       {showTagline && (
         <span
