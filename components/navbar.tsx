@@ -47,11 +47,11 @@ export function Navbar() {
     <header
       className={cn(
         'fixed inset-x-0 top-0 z-50 transition-all duration-300',
-        // Always navy now — matches the footer brand block. The scrolled
-        // state just adds a subtle border + shadow to lift it off the page.
-        'bg-brand-navy text-white',
-        scrolled &&
-          'border-b border-white/10 shadow-[0_1px_0_0_rgba(0,0,0,0.15)]',
+        // Light, frosted background so the dark-on-light lockup reads cleanly.
+        // Stays transparent over the hero, then fades in once you scroll.
+        scrolled
+          ? 'bg-white/85 backdrop-blur-md border-b border-border shadow-[0_1px_0_0_rgba(14,34,49,0.04)]'
+          : 'bg-transparent',
       )}
     >
       <div className="container-tight flex h-20 items-center justify-between">
@@ -60,8 +60,7 @@ export function Navbar() {
           aria-label="Upward Physio — home"
           className="transition-opacity hover:opacity-80"
         >
-          {/* `inverted` swaps to the white-on-dark lockup */}
-          <LogoLockup inverted />
+          <LogoLockup />
         </Link>
 
         {/* Desktop nav */}
@@ -70,7 +69,7 @@ export function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-white/85 transition-colors hover:text-brand-teal-light"
+              className="brand-link text-sm font-medium"
             >
               {item.label}
             </Link>
@@ -84,7 +83,7 @@ export function Navbar() {
         <button
           type="button"
           onClick={() => setMobileOpen((v) => !v)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md text-white md:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-md text-brand-navy md:hidden"
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={mobileOpen}
         >
@@ -95,7 +94,7 @@ export function Navbar() {
       {/* Mobile drawer */}
       <div
         className={cn(
-          'md:hidden fixed inset-x-0 top-20 bottom-0 bg-brand-navy text-white transition-transform duration-300 overflow-y-auto',
+          'md:hidden fixed inset-x-0 top-20 bottom-0 bg-white transition-transform duration-300 overflow-y-auto',
           mobileOpen ? 'translate-x-0' : 'translate-x-full',
         )}
       >
@@ -105,22 +104,20 @@ export function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="border-b border-white/10 py-4 font-display text-2xl text-white"
+                className="border-b border-border py-4 font-display text-2xl text-brand-navy"
               >
                 {item.label}
               </Link>
             ))}
           </nav>
           <div className="mt-8">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-brand-teal-light mb-4">
-              Services
-            </p>
+            <p className="eyebrow mb-4">Services</p>
             <ul className="flex flex-col gap-3">
               {services.map((service) => (
                 <li key={service.slug}>
                   <Link
                     href={`/services/${service.slug}`}
-                    className="text-sm text-white/80 hover:text-brand-teal-light"
+                    className="text-sm text-brand-navy/80 hover:text-brand-teal-dark"
                   >
                     {service.shortTitle}
                   </Link>
