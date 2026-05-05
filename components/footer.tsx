@@ -10,9 +10,15 @@ export function Footer() {
     <footer className="bg-brand-navy text-white">
       <div className="container-tight py-16 md:py-20">
         <div className="grid gap-12 md:grid-cols-12">
-          {/* Brand block — mirrors the dark-mode lockup from the logo guide */}
+          {/* Brand block — left-aligned, larger logo, no tagline (it's
+              already part of the wordmark). The description sits directly
+              underneath the lockup. */}
           <div className="md:col-span-5">
-            <LogoLockup inverted showTagline />
+            <LogoLockup
+              inverted
+              className="items-start"
+              imageClassName="h-32 w-auto"
+            />
             <p className="mt-6 max-w-sm text-sm text-white/70">
               {siteConfig.description}
             </p>
