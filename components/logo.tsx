@@ -1,98 +1,92 @@
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
+
+/**
+ * Logo components — backed by the SVG files in /public.
+ *
+ * Files:
+ *   - /logo-mark.svg        Mark only (square-ish, 136×122)
+ *   - /logo-lockup.svg      Mark + wordmark on light bg (wide, 302×65)
+ *   - /logo-mark-white.svg  Mark + wordmark on dark bg (wide, 323×72)
+ *
+ * Note: despite its filename, logo-mark-white.svg is actually the full
+ * lockup in white — it's used as the inverted lockup on the navy footer.
+ */
 
 type LogoMarkProps = {
   className?: string;
-  /** When true, both arcs use white — for use on the dark navy footer/nav. */
+  /** When true, renders the mark in white — for use on dark backgrounds. */
   inverted?: boolean;
-  /** When true, the upper arc slowly rotates — used once on the hero. */
-  animated?: boolean;
 };
 
 /**
- * The two-arc mark from the Upward Physio brand guide.
+ * The two-arc mark only (no wordmark).
  *
- *  - Upper arc (teal):  Support & Care
- *  - Lower arc (navy):  Stability & Strength
- *  - Together:          Balance & Upward Progress
- *
- * Constructed with two stroked arcs sharing a common center, mirrored
- * vertically and offset slightly so they read as "opposing forces" — exactly
- * the dynamic equilibrium described in the brand sheet.
+ * There's no dedicated white-only mark file, so when `inverted` is true
+ * we render the regular mark with a CSS filter to flip it to white.
+ * `brightness-0 invert` is the standard Tailwind trick for this — it
+ * blacks out the SVG, then inverts black to white.
  */
-export function LogoMark({
-  className,
-  inverted = false,
-  animated = false,
-}: LogoMarkProps) {
-  const upper = inverted ? '#FFFFFF' : '#3FBFB5';
-  const lower = inverted ? '#FFFFFF' : '#0E2231';
-
+export function LogoMark({ className, inverted = false }: LogoMarkProps) {
   return (
-    <svg
-      viewBox="0 0 100 100"
-      xmlns="http://www.w3.org/2000/svg"
-      className={cn('block', className)}
+    <Image
+      src="/logo-mark.svg"
+      alt=""
       aria-hidden="true"
-    >
-      {/* Upper arc: opens downward, sits in the top half */}
-      <path
-        d="M 18 50 A 32 32 0 0 1 82 50"
-        fill="none"
-        stroke={upper}
-        strokeWidth="14"
-        strokeLinecap="round"
-        className={animated ? 'origin-center animate-fade-in' : undefined}
-      />
-      {/* Lower arc: opens upward, sits in the bottom half, slightly larger
-         to mimic the weighted "foundation" feel from the original mark */}
-      <path
-        d="M 14 52 A 36 36 0 0 0 86 52"
-        fill="none"
-        stroke={lower}
-        strokeWidth="14"
-        strokeLinecap="round"
-      />
-    </svg>
+      width={136}
+      height={122}
+      priority
+      className={cn(
+        'block',
+        inverted && 'brightness-0 invert',
+        className,
+      )}
+    />
   );
 }
 
+type LogoLockupProps = {
+  className?: string;
+  inverted?: boolean;
+  showTagline?: boolean;
+};
+
 /**
- * Full lockup: mark + wordmark side-by-side, exactly the layout used in
- * the navbar and footer. Wordmark splits "Upward" (navy) and "Physio" (teal)
- * the way the brand guide shows.
+ * Full lockup: mark + wordmark. Picks the white file on dark backgrounds,
+ * the regular file on light ones. The lockup SVGs already include the
+ * wordmark text, so there's no separate text rendered here.
  */
 export function LogoLockup({
   className,
   inverted = false,
   showTagline = false,
-}: {
-  className?: string;
-  inverted?: boolean;
-  showTagline?: boolean;
-}) {
-  const wordPrimary = inverted ? '#FFFFFF' : '#0E2231';
-  const wordSecondary = inverted ? '#7AD3CB' : '#3FBFB5';
+}: LogoLockupProps) {
+  const src = inverted ? '/logo-mark-white.svg' : '/logo-lockup.svg';
+  const width = inverted ? 323 : 302;
+  const height = inverted ? 72 : 65;
+
   const taglineColor = inverted
     ? 'rgba(255,255,255,0.65)'
     : 'rgba(14,34,49,0.65)';
 
   return (
-    <div className={cn('flex items-center gap-3', className)}>
-      <LogoMark className="h-9 w-9 shrink-0" inverted={inverted} />
-      <div className="flex flex-col leading-none">
-        <span className="font-display text-2xl tracking-tight">
-          <span style={{ color: wordPrimary }}>Upward</span>
-          <span style={{ color: wordSecondary }}>Physio</span>
+    <div className={cn('flex flex-col', className)}>
+      <Image
+        src={src}
+        alt="Upward Physio"
+        width={width}
+        height={height}
+        priority
+        className="block h-10 w-auto"
+      />
+      {showTagline && (
+        <span
+          className="mt-2 text-[10px] font-medium uppercase tracking-[0.22em]"
+          style={{ color: taglineColor }}
+        >
+          Move Better. Live Better.
         </span>
-        {showTagline && (
-          <span
-            className="mt-1.5 text-[10px] font-medium uppercase tracking-[0.22em]"
-            style={{ color: taglineColor }}
-          >
-            Move Better. Live Better.
-          </span>
-        )}
-      </div>
+      )}
     </div>
   );
 }
