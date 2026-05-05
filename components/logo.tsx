@@ -5,12 +5,16 @@ import { cn } from '@/lib/utils';
  * Logo components — backed by the SVG files in /public.
  *
  * Files:
- *   - /logo-mark.svg        Mark only (square-ish, 136×122)
- *   - /logo-lockup.svg      Mark + wordmark on light bg (wide, 302×65)
- *   - /logo-mark-white.svg  Mark + wordmark on dark bg (wide, 323×72)
+ *   - /logo-mark.svg              Mark only (square-ish, 136×122)
+ *   - /logo-lockup-full.svg       Full lockup with tagline baked in (701×157, dark-on-light)
+ *   - /logo-lockup.svg            Older lockup without tagline (302×65, dark-on-light)
+ *   - /logo-mark-white.svg        Lockup in white for dark backgrounds (323×72)
  *
- * Note: despite its filename, logo-mark-white.svg is actually the full
- * lockup in white — it's used as the inverted lockup on the navy footer.
+ * The "full" lockup is the high-fidelity version — mark + "UpwardPhysio"
+ * wordmark + "MOVE BETTER. LIVE BETTER." tagline all as crisp vector paths.
+ * It's the default for light backgrounds. On dark backgrounds the older
+ * white file is still used (the full lockup is dark-on-transparent and
+ * doesn't have a white variant).
  */
 
 type LogoMarkProps = {
@@ -48,7 +52,6 @@ export function LogoMark({ className, inverted = false }: LogoMarkProps) {
 type LogoLockupProps = {
   className?: string;
   inverted?: boolean;
-  showTagline?: boolean;
   /**
    * Optional className applied directly to the underlying <Image>. Useful
    * for size overrides — e.g. the footer renders the lockup much larger
@@ -58,42 +61,33 @@ type LogoLockupProps = {
 };
 
 /**
- * Full lockup: mark + wordmark. Picks the white file on dark backgrounds,
- * the regular file on light ones. The lockup SVGs already include the
- * wordmark text, so there's no separate text rendered here.
+ * Full lockup: mark + wordmark + tagline. On light backgrounds we use the
+ * high-fidelity full lockup SVG (which has the tagline baked in as crisp
+ * vector paths). On dark backgrounds we fall back to the white lockup
+ * file. The `showTagline` prop is gone — the new lockup includes the
+ * tagline as part of the artwork, so there's nothing to toggle.
  */
 export function LogoLockup({
   className,
   inverted = false,
-  showTagline = false,
   imageClassName,
 }: LogoLockupProps) {
-  const src = inverted ? '/logo-mark-white.svg' : '/logo-lockup.svg';
-  const width = inverted ? 323 : 302;
-  const height = inverted ? 72 : 65;
-
-  const taglineColor = inverted
-    ? 'rgba(255,255,255,0.65)'
-    : 'rgba(14,34,49,0.65)';
+  // Different files have different aspect ratios — use the correct
+  // intrinsic dimensions so Next/Image preserves quality.
+  const src = inverted ? '/logo-mark-white.svg' : '/logo-lockup-full.svg';
+  const width = inverted ? 323 : 701;
+  const height = inverted ? 72 : 157;
 
   return (
     <div className={cn('flex flex-col', className)}>
       <Image
         src={src}
-        alt="Upward Physio"
+        alt="Upward Physio — Move Better. Live Better."
         width={width}
         height={height}
         priority
-        className={cn('block h-10 w-auto', imageClassName)}
+        className={cn('block h-12 w-auto', imageClassName)}
       />
-      {showTagline && (
-        <span
-          className="mt-2 text-[10px] font-medium uppercase tracking-[0.22em]"
-          style={{ color: taglineColor }}
-        >
-          Move Better. Live Better.
-        </span>
-      )}
     </div>
   );
 }
