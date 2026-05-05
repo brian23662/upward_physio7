@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* shadcn tokens — tuned to the Upward Physio palette so default
+       components inherit the brand without per-component overrides */
+    --background: 40 20% 97%; /* warm off-white, matches logo guide bg */
+    --foreground: 205 56% 12%; /* brand navy */
+
+    --card: 0 0% 100%;
+    --card-foreground: 205 56% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 205 56% 12%;
+
+    /* Primary = brand teal */
+    --primary: 175 51% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 40 15% 92%;
+    --secondary-foreground: 205 56% 12%;
+
+    --muted: 40 15% 94%;
+    --muted-foreground: 205 20% 35%;
+
+    --accent: 175 51% 92%;
+    --accent-foreground: 205 56% 12%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 40 10% 88%;
+    --input: 40 10% 88%;
+    --ring: 175 51% 50%;
+
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    /* Smooth scroll for in-page anchor links */
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: 'rlig' 1, 'calt' 1, 'ss01' 1;
+  }
+
+  /* Display headlines use the elegant serif we paired with the logo */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer components {
+  /* Reusable container that respects the Vercel/Tailwind container plugin
+     but allows us to add brand-specific gutters at small breakpoints */
+  .container-tight {
+    @apply mx-auto w-full max-w-6xl px-6 md:px-8;
+  }
+
+  /* Subtle section spacing rhythm used across the marketing site */
+  .section {
+    @apply py-20 md:py-28;
+  }
+
+  /* Brand-flavored link underline that animates on hover */
+  .brand-link {
+    @apply relative inline-block text-brand-navy;
+  }
+  .brand-link::after {
+    content: '';
+    @apply absolute left-0 -bottom-0.5 h-px w-full origin-right scale-x-0 bg-brand-teal transition-transform duration-300;
+  }
+  .brand-link:hover::after {
+    @apply origin-left scale-x-100;
+  }
+
+  /* Caps tracking treatment used on the logo's "MOVE BETTER. LIVE BETTER." */
+  .eyebrow {
+    @apply text-xs font-medium uppercase tracking-[0.22em] text-brand-teal-dark;
+  }
+}
+
+@layer utilities {
+  /* Decorative arc-pair background — echoes the logo mark.
+     Used behind the hero and one or two CTA blocks for cohesion. */
+  .arc-pattern {
+    background-image: radial-gradient(
+        circle at 20% 20%,
+        rgba(63, 191, 181, 0.06) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 80% 80%,
+        rgba(14, 34, 49, 0.05) 0%,
+        transparent 40%
+      );
+  }
+
+  /* Respect users who'd rather not have motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
